@@ -361,11 +361,85 @@ body {
   font-weight: 700;
 }
 
+.betting-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.bet-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 2px dashed rgba(234, 179, 8, 0.55);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.14) 100%);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.bet-circle:hover {
+  border-color: var(--gold-soft);
+}
+
+.bet-circle-placeholder {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: rgba(253, 224, 71, 0.55);
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+.table-chip-stack {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-chip {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 5px dashed rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #ffffff;
+  pointer-events: none;
+  animation: chipDrop 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.table-chip::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+@keyframes chipDrop {
+  from { opacity: 0; transform: translateY(18px) scale(0.85); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .bet-pot {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px dashed rgba(234, 179, 8, 0.45);
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(234, 179, 8, 0.45);
   border-radius: 999px;
-  padding: 6px 20px;
+  padding: 5px 16px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -378,11 +452,29 @@ body {
   color: var(--text-muted);
 }
 
-.pot-value {
-  font-size: 1.05rem;
-  font-weight: 800;
+.bet-input {
+  width: 92px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  border-radius: 8px;
+  padding: 4px 8px;
   color: var(--gold-soft);
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: right;
   font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.bet-input:focus {
+  border-color: var(--gold-soft);
+  box-shadow: 0 0 0 2px rgba(253, 224, 71, 0.22);
+}
+
+.bet-input:disabled {
+  background: transparent;
+  border-color: transparent;
+  opacity: 1;
 }
 
 .result-banner {
@@ -499,27 +591,37 @@ body {
 }
 
 .chip {
-  width: 52px;
-  height: 52px;
+  position: relative;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  border: 4px dashed rgba(255, 255, 255, 0.75);
+  border: 5px dashed rgba(255, 255, 255, 0.85);
   color: #ffffff;
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.25);
   transition: transform 0.15s ease, opacity 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.chip::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
 .chip:hover:not(:disabled) {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-5px) scale(1.06);
 }
 
 .chip:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .chip:disabled {
@@ -527,6 +629,8 @@ body {
   cursor: not-allowed;
 }
 
+.chip-1   { background: #e2e8f0; color: #0f172a; border-color: #334155; }
+.chip-1::after { border-color: rgba(15, 23, 42, 0.35); }
 .chip-5   { background: #dc2626; }
 .chip-10  { background: #2563eb; }
 .chip-25  { background: #16a34a; }

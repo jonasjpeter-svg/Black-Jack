@@ -18,6 +18,7 @@
   let state = {
     balance: STARTING_BALANCE,
     currentBet: 0,
+    betChips: [],
     lastBet: 0,
     shoe: [],
     dealerHand: [],
@@ -49,7 +50,10 @@
     resultBanner: document.getElementById("result-banner"),
     resultTitle: document.getElementById("result-title"),
     resultSubtitle: document.getElementById("result-subtitle"),
-    betDisplay: document.getElementById("bet-display"),
+    betCircle: document.getElementById("bet-circle"),
+    betCirclePlaceholder: document.getElementById("bet-circle-placeholder"),
+    tableChipStack: document.getElementById("table-chip-stack"),
+    betInput: document.getElementById("bet-input"),
     playerHands: document.getElementById("player-hands"),
     bettingControls: document.getElementById("betting-controls"),
     playingControls: document.getElementById("playing-controls"),
@@ -236,16 +240,45 @@
     return div;
   }
 
+  function decomposeToChips(amount) {
+    const denoms = [500, 100, 50, 25, 10, 5, 1];
+    let remaining = Math.floor(amount);
+    const chips = [];
+    for (const d of denoms) {
+      while (remaining >= d && chips.length < 18) {
+        chips.push(d);
+        remaining -= d;
+      }
+    }
+    return chips;
+  }
+
   function render() {
     el.balanceDisplay.textContent = formatCHF(state.balance);
     el.soundToggle.textContent = state.soundEnabled ? "🔊" : "🔇";
 
-    // Total bet displayed
+    // Total bet displayed & center poker chip stack
     const totalActiveBet =
       state.phase === "betting"
         ? state.currentBet
         : state.playerHands.reduce((sum, h) => sum + h.bet, 0);
-    el.betDisplay.textContent = formatCHF(totalActiveBet);
+
+    if (document.activeElement !== el.betInput) {
+      el.betInput.value = totalActiveBet;
+    }
+    el.betInput.disabled = state.phase !== "betting";
+
+    const chipsToShow =
+      state.phase === "betting" ? state.betChips : decomposeToChips(totalActiveBet);
+    el.tableChipStack.innerHTML = "";
+    el.betCirclePlaceholder.classList.toggle("hidden", chipsToShow.length > 0 || totalActiveBet > 0);
+    chipsToShow.slice(-12).forEach((val, idx) => {
+      const chipEl = document.createElement("div");
+      chipEl.className = `table-chip chip-${val}`;
+      chipEl.style.transform = `translateY(${-idx * 4}px)`;
+      chipEl.textContent = val;
+      el.tableChipStack.appendChild(chipEl);
+    });
 
     // Dealer cards & score
     el.dealerCards.innerHTML = "";
@@ -369,6 +402,28 @@
     soundChip();
     state.balance -= amount;
     state.currentBet += amount;
+    state.betChips.push(amount);
+    render();
+  }
+
+  function removeTopChip() {
+    if (state.phase !== "betting" || state.betChips.length === 0) return;
+    const removed = state.betChips.pop();
+    state.balance += removed;
+    state.currentBet = Math.max(0, state.currentBet - removed);
+    soundChip();
+    render();
+  }
+
+  function setBetFromInput(rawValue) {
+    if (state.phase !== "betting") return;
+    const available = state.balance + state.currentBet;
+    let parsed = Math.floor(Number(rawValue));
+    if (!Number.isFinite(parsed) || parsed < 0) parsed = 0;
+    if (parsed > available) parsed = Math.floor(available);
+    state.balance = available - parsed;
+    state.currentBet = parsed;
+    state.betChips = decomposeToChips(parsed);
     render();
   }
 
@@ -376,6 +431,7 @@
     if (state.phase !== "betting" || state.currentBet === 0) return;
     state.balance += state.currentBet;
     state.currentBet = 0;
+    state.betChips = [];
     render();
   }
 
@@ -385,6 +441,7 @@
     if (state.lastBet <= 0 || available < state.lastBet) return;
     state.balance = available - state.lastBet;
     state.currentBet = state.lastBet;
+    state.betChips = decomposeToChips(state.lastBet);
     soundChip();
     render();
   }
@@ -394,6 +451,7 @@
     soundChip();
     state.currentBet += state.balance;
     state.balance = 0;
+    state.betChips = decomposeToChips(state.currentBet);
     render();
   }
 
@@ -417,6 +475,7 @@
       },
     ];
     state.currentBet = 0;
+    state.betChips = [];
     state.activeHandIndex = 0;
     el.resultBanner.classList.add("hidden");
     setRobotSpeech("Karten werden ausgeteilt…", true);
@@ -645,11 +704,13 @@
     state.dealerRevealed = false;
     state.playerHands = [];
     state.activeHandIndex = 0;
+    state.betChips = [];
     el.resultBanner.classList.add("hidden");
 
     if (autoRebet && state.lastBet > 0 && state.balance >= state.lastBet) {
       state.balance -= state.lastBet;
       state.currentBet = state.lastBet;
+      state.betChips = decomposeToChips(state.lastBet);
       render();
       startDeal();
       return;
@@ -673,6 +734,7 @@
   function resetAll() {
     state.balance = STARTING_BALANCE;
     state.currentBet = 0;
+    state.betChips = [];
     state.lastBet = 0;
     state.phase = "betting";
     state.dealerHand = [];
@@ -693,6 +755,12 @@
   // --- Event Listeners ---
   el.chips.forEach((chip) => {
     chip.addEventListener("click", () => addBet(Number(chip.dataset.value)));
+  });
+
+  el.betCircle.addEventListener("click", removeTopChip);
+  el.betInput.addEventListener("input", (e) => setBetFromInput(e.target.value));
+  el.betInput.addEventListener("blur", () => {
+    el.betInput.value = state.phase === "betting" ? state.currentBet : el.betInput.value;
   });
 
   el.clearBetBtn.addEventListener("click", clearBet);

@@ -72,9 +72,23 @@
           <span id="result-subtitle"></span>
         </div>
 
-        <div class="bet-pot">
-          <span class="pot-label">Aktueller Einsatz</span>
-          <span class="pot-value" id="bet-display">CHF 0.00</span>
+        <div class="betting-spot" id="betting-spot">
+          <div class="bet-circle" id="bet-circle" title="Klicken, um obersten Chip zu entfernen">
+            <div class="table-chip-stack" id="table-chip-stack"></div>
+            <span class="bet-circle-placeholder" id="bet-circle-placeholder">EINSATZ<br />HIER</span>
+          </div>
+          <div class="bet-pot">
+            <label class="pot-label" for="bet-input">Dein Einsatz (CHF)</label>
+            <input
+              type="number"
+              id="bet-input"
+              class="bet-input"
+              min="0"
+              step="1"
+              value="0"
+              aria-label="Dein Einsatz in CHF"
+            />
+          </div>
         </div>
       </section>
 
@@ -90,13 +104,14 @@
     <footer class="controls-bar">
       <!-- Betting Controls -->
       <div class="betting-controls" id="betting-controls">
-        <div class="chips-rack" aria-label="CHF Jetons">
-          <button class="chip chip-5" data-value="5">5</button>
-          <button class="chip chip-10" data-value="10">10</button>
-          <button class="chip chip-25" data-value="25">25</button>
-          <button class="chip chip-50" data-value="50">50</button>
-          <button class="chip chip-100" data-value="100">100</button>
-          <button class="chip chip-500" data-value="500">500</button>
+        <div class="chips-rack" aria-label="CHF Poker Chips">
+          <button class="chip chip-1" data-value="1" title="CHF 1 setzen"><span>1</span></button>
+          <button class="chip chip-5" data-value="5" title="CHF 5 setzen"><span>5</span></button>
+          <button class="chip chip-10" data-value="10" title="CHF 10 setzen"><span>10</span></button>
+          <button class="chip chip-25" data-value="25" title="CHF 25 setzen"><span>25</span></button>
+          <button class="chip chip-50" data-value="50" title="CHF 50 setzen"><span>50</span></button>
+          <button class="chip chip-100" data-value="100" title="CHF 100 setzen"><span>100</span></button>
+          <button class="chip chip-500" data-value="500" title="CHF 500 setzen"><span>500</span></button>
         </div>
 
         <div class="bet-actions">
