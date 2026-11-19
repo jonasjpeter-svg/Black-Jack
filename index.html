@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Black Jack – Robo-Casino (CHF)</title>
+  <title>Black Jack – Casino (CHF)</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,25 +12,19 @@
     <header class="top-bar">
       <div class="brand">
         <span class="brand-icon" aria-hidden="true">🤖</span>
-        <div>
-          <h1>BLACK JACK <span class="badge">CHF</span></h1>
-          <p class="subtitle">Spiele gegen den Robo-Croupier – gratis &amp; ohne Einzahlung</p>
-        </div>
+        <h1>BLACK JACK <span class="badge">CHF</span></h1>
       </div>
 
       <div class="wallet-panel">
         <div class="wallet-box">
-          <span class="wallet-label">Kontostand</span>
+          <span class="wallet-label">Guthaben</span>
           <span class="wallet-amount" id="balance-display">CHF 1'000.00</span>
         </div>
         <button class="btn btn-gold btn-sm" id="topup-btn" title="Gratis Spielgeld nachladen">
-          + CHF 1'000 gratis
+          + CHF 1'000
         </button>
         <button class="btn btn-ghost btn-sm" id="sound-toggle" aria-label="Ton ein/aus" title="Ton ein/aus">
           🔊
-        </button>
-        <button class="btn btn-ghost btn-sm" id="rules-btn" title="Spielregeln">
-          Regeln
         </button>
       </div>
     </header>
@@ -53,7 +47,7 @@
               <span class="score-pill" id="dealer-score">0</span>
             </div>
             <p class="robot-speech" id="robot-speech">
-              Willkommen am Tisch! Setze deine CHF-Jetons und klicke auf «Austeilen».
+              Setze deine Chips und drücke auf «Austeilen».
             </p>
           </div>
         </div>
@@ -61,12 +55,8 @@
         <div class="cards-row" id="dealer-cards" aria-live="polite"></div>
       </section>
 
-      <!-- Center Table Info & Banner -->
+      <!-- Center Table -->
       <section class="table-center">
-        <div class="table-rules-text">
-          BLACKJACK ZAHLT 3:2 &bull; ROBOTER ZIEHT BIS 16, STEHT BEI 17 &bull; 6 DECKS
-        </div>
-
         <div class="result-banner hidden" id="result-banner" role="status" aria-live="assertive">
           <span id="result-title"></span>
           <span id="result-subtitle"></span>
@@ -75,10 +65,10 @@
         <div class="betting-spot" id="betting-spot">
           <div class="bet-circle" id="bet-circle" title="Klicken, um obersten Chip zu entfernen">
             <div class="table-chip-stack" id="table-chip-stack"></div>
-            <span class="bet-circle-placeholder" id="bet-circle-placeholder">EINSATZ<br />HIER</span>
+            <span class="bet-circle-placeholder" id="bet-circle-placeholder">EINSATZ</span>
           </div>
           <div class="bet-pot">
-            <label class="pot-label" for="bet-input">Dein Einsatz (CHF)</label>
+            <label class="pot-label" for="bet-input">Einsatz (CHF)</label>
             <input
               type="number"
               id="bet-input"
@@ -94,9 +84,7 @@
 
       <!-- Player Area -->
       <section class="zone player-zone" aria-label="Spieler">
-        <div class="player-hands" id="player-hands">
-          <!-- Hands rendered dynamically -->
-        </div>
+        <div class="player-hands" id="player-hands"></div>
       </section>
     </main>
 
@@ -116,7 +104,7 @@
 
         <div class="bet-actions">
           <button class="btn btn-ghost" id="clear-bet-btn">Löschen</button>
-          <button class="btn btn-ghost" id="rebet-btn">Letzter Einsatz</button>
+          <button class="btn btn-ghost" id="rebet-btn">Letzter</button>
           <button class="btn btn-ghost" id="allin-btn">All-In</button>
           <button class="btn btn-primary btn-lg" id="deal-btn" disabled>Austeilen</button>
         </div>
@@ -124,48 +112,18 @@
 
       <!-- Playing Controls -->
       <div class="playing-controls hidden" id="playing-controls">
-        <button class="btn btn-primary btn-lg" id="hit-btn">Karte (Hit)</button>
-        <button class="btn btn-secondary btn-lg" id="stand-btn">Halten (Stand)</button>
-        <button class="btn btn-gold btn-lg" id="double-btn">Verdoppeln (2x)</button>
-        <button class="btn btn-ghost btn-lg" id="split-btn">Teilen (Split)</button>
+        <button class="btn btn-primary btn-lg" id="hit-btn">Karte</button>
+        <button class="btn btn-secondary btn-lg" id="stand-btn">Halten</button>
+        <button class="btn btn-gold btn-lg" id="double-btn">Verdoppeln</button>
+        <button class="btn btn-ghost btn-lg" id="split-btn">Teilen</button>
       </div>
 
       <!-- Next Round Controls -->
       <div class="next-controls hidden" id="next-controls">
         <button class="btn btn-primary btn-lg" id="new-round-btn">Nächste Runde</button>
-        <button class="btn btn-gold btn-lg" id="quick-rebet-btn">Gleicher Einsatz &amp; Austeilen</button>
+        <button class="btn btn-gold btn-lg" id="quick-rebet-btn">Nochmal setzen</button>
       </div>
     </footer>
-
-    <!-- Stats Footer -->
-    <div class="stats-bar">
-      <span>Runden: <strong id="stat-rounds">0</strong></span>
-      <span>Siege: <strong id="stat-wins">0</strong></span>
-      <span>Blackjacks: <strong id="stat-blackjacks">0</strong></span>
-      <span>Rekord-Guthaben: <strong id="stat-peak">CHF 1'000.00</strong></span>
-      <button class="link-btn" id="reset-stats-btn">Konto &amp; Statistik zurücksetzen</button>
-    </div>
-  </div>
-
-  <!-- Rules Modal -->
-  <div class="modal-backdrop hidden" id="rules-modal" role="dialog" aria-modal="true" aria-labelledby="rules-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 id="rules-title">Spielregeln – Black Jack (CHF)</h2>
-        <button class="btn btn-ghost btn-sm" id="close-rules-btn" aria-label="Schliessen">✕</button>
-      </div>
-      <div class="modal-body">
-        <ul>
-          <li><strong>Ziel:</strong> Komme mit deinen Karten so nah wie möglich an <strong>21 Punkte</strong> heran, ohne sie zu überschreiten, und schlage den Robo-Croupier.</li>
-          <li><strong>Kartenwerte:</strong> Zahlenkarten zählen ihren Wert, Bildkarten (J, Q, K) zählen <strong>10</strong>, das Ass zählt <strong>11 oder 1</strong> (automatisch zu deinen Gunsten).</li>
-          <li><strong>Blackjack (3:2):</strong> Ass + 10er-Karte direkt zu Beginn gewinnt <strong>1.5× deinen Einsatz</strong> (ausser der Roboter hat ebenfalls einen Blackjack → Unentschieden).</li>
-          <li><strong>Robo-Croupier:</strong> Zieht bei 16 oder weniger eine weitere Karte und bleibt bei <strong>17 oder mehr</strong> stehen.</li>
-          <li><strong>Verdoppeln (Double Down):</strong> Bei deinen ersten 2 Karten kannst du deinen Einsatz verdoppeln und bekommst genau <strong>eine letzte Karte</strong>.</li>
-          <li><strong>Teilen (Split):</strong> Bei zwei gleichwertigen Startkarten kannst du auf zwei separate Hände aufteilen.</li>
-          <li><strong>Gratis CHF:</strong> Du spielst mit realistischem CHF-Guthaben ohne echte Einzahlung. Geht das Guthaben zur Neige, klicke einfach auf <strong>«+ CHF 1'000 gratis»</strong>.</li>
-        </ul>
-      </div>
-    </div>
   </div>
 
   <script src="app.js"></script>

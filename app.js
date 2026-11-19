@@ -40,9 +40,6 @@
     balanceDisplay: document.getElementById("balance-display"),
     topupBtn: document.getElementById("topup-btn"),
     soundToggle: document.getElementById("sound-toggle"),
-    rulesBtn: document.getElementById("rules-btn"),
-    rulesModal: document.getElementById("rules-modal"),
-    closeRulesBtn: document.getElementById("close-rules-btn"),
     robotAvatar: document.getElementById("robot-avatar"),
     robotSpeech: document.getElementById("robot-speech"),
     dealerScore: document.getElementById("dealer-score"),
@@ -69,11 +66,6 @@
     splitBtn: document.getElementById("split-btn"),
     newRoundBtn: document.getElementById("new-round-btn"),
     quickRebetBtn: document.getElementById("quick-rebet-btn"),
-    statRounds: document.getElementById("stat-rounds"),
-    statWins: document.getElementById("stat-wins"),
-    statBlackjacks: document.getElementById("stat-blackjacks"),
-    statPeak: document.getElementById("stat-peak"),
-    resetStatsBtn: document.getElementById("reset-stats-btn"),
   };
 
   // --- Audio (Web Audio API) ---
@@ -387,12 +379,6 @@
     if (state.phase === "settled") {
       el.quickRebetBtn.disabled = state.lastBet <= 0 || state.balance < state.lastBet;
     }
-
-    // Stats
-    el.statRounds.textContent = state.stats.rounds;
-    el.statWins.textContent = state.stats.wins;
-    el.statBlackjacks.textContent = state.stats.blackjacks;
-    el.statPeak.textContent = formatCHF(state.stats.peak);
   }
 
   // --- Betting Actions ---
@@ -777,18 +763,11 @@
   el.quickRebetBtn.addEventListener("click", () => resetToBetting(true));
 
   el.topupBtn.addEventListener("click", topUpFreeCHF);
-  el.resetStatsBtn.addEventListener("click", resetAll);
 
   el.soundToggle.addEventListener("click", () => {
     state.soundEnabled = !state.soundEnabled;
     saveProgress();
     render();
-  });
-
-  el.rulesBtn.addEventListener("click", () => el.rulesModal.classList.remove("hidden"));
-  el.closeRulesBtn.addEventListener("click", () => el.rulesModal.classList.add("hidden"));
-  el.rulesModal.addEventListener("click", (e) => {
-    if (e.target === el.rulesModal) el.rulesModal.classList.add("hidden");
   });
 
   // --- Init ---
